@@ -1,16 +1,29 @@
 import streamlit as st
 import requests
+import uuid
 
-# الرابط الكامل المدمج بين Ngrok والـ Path الموضح في الصورة
+# الرابط الخاص بـ Ngrok للـ Webhook
 WEBHOOK_URL = "https://rename-chastity-chamber.ngrok-free.dev/webhook/f2ba8546-d338-4836-b7ff-4faae74b38f9"
 
-st.set_page_config(page_title="Protein AI Assistant", page_icon="🧬")
-st.title("🧬 Protein AI Assistant")
-st.caption("مساعد الذكاء الاصطناعي للبحث في قواعد بيانات البروتينات")
+st.set_page_config(page_title="Multi-Database Protein AI", page_icon="🧬", layout="wide")
+st.title("🧬 Protein & Genomics AI Assistant")
+st.caption("مساعد بحثي متكامل متصل بـ UniProt, PDB, و NCBI")
 
-# تهيئة سجل المحادثة
+# إنشاء Session ID فريد للفيو الحالي عشان n8n يحفظ سياق المحادثة
+if "session_id" not in st.session_state:
+    st.session_state.session_id = str(uuid.uuid4())
+
+# تهيئة سجل المحادثة على الشاشة
 if "messages" not in st.session_state:
     st.session_state.messages = []
+
+# زر لإعادة بدء محادثة جديدة
+with st.sidebar:
+    st.header("إعدادات الجلسة")
+    if st.button("🗑️ مسح المحادثة وبدء جلسة جديدة"):
+        st.session_state.messages = []
+        st.session_state.session_id = str(uuid.uuid4())
+        st.rerun()
 
 # عرض المحادثات السابقة
 for message in st.session_state.messages:
@@ -18,19 +31,24 @@ for message in st.session_state.messages:
         st.markdown(message["content"])
 
 # استقبال مدخلات المستخدم
-if prompt := st.chat_input("اكتب اسم البروتين أو سؤالك هنا..."):
+if prompt := st.chat_input("اسأل عن بروتين، تركيب PDB، أو تتابع جيني في NCBI..."):
     # إضافة سؤال المستخدم للواجهة
     st.session_state.messages.append({"role": "user", "content": prompt})
     with st.chat_message("user"):
         st.markdown(prompt)
 
-    # إرسال الطلب إلى n8n وعرض استجابة الذكاء الاصطناعي
+    # إرسال الطلب مع الـ session_id للحفاظ على التتابع
     with st.chat_message("assistant"):
         message_placeholder = st.empty()
-        message_placeholder.markdown("جاري البحث في قاعدة البيانات...")
+        message_placeholder.markdown("🔍 جاري البحث والاستعلام من القواعد..." )
+        
+        payload = {
+            "message": prompt,
+            "sessionId": st.session_state.session_id
+        }
         
         try:
-            response = requests.post(WEBHOOK_URL, json={"message": prompt})
+            response = requests.post(WEBHOOK_URL, json=payload)
             if response.status_code == 200:
                 try:
                     res_data = response.json()
