@@ -3,7 +3,7 @@ import requests
 import uuid
 
 # الرابط الخاص بـ Ngrok للـ Webhook
-WEBHOOK_URL = "https://rename-chastity-chamber.ngrok-free.dev/webhook/f2ba8546-d338-4836-b7ff-4faae74b38f9"
+WEBHOOK_URL = "http://localhost:5678/webhook/f2ba8546-d338-4836-b7ff-4faae74b38f9"
 
 st.set_page_config(page_title="Multi-Database Protein AI", page_icon="🧬", layout="wide")
 st.title("🧬 Protein & Genomics AI Assistant")
