@@ -1,5 +1,6 @@
 import streamlit as st
 import os
+import base64
 
 # ---------------------------------------------------------
 # Page Config & Custom Styling
@@ -10,6 +11,15 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded"
 )
+
+# دالة لتحويل الصور المحلية لـ Base64 لتعمل داخل HTML بأمان
+def get_image_base64(path):
+    if os.path.exists(path):
+        with open(path, "rb") as image_file:
+            encoded = base64.b64encode(image_file.read()).decode()
+            ext = path.split('.')[-1]
+            return f"data:image/{ext};base64,{encoded}"
+    return None
 
 # Custom CSS for primary colors (Navy & Teal Palette)
 st.markdown("""
@@ -93,9 +103,32 @@ st.markdown("""
     .vendor-card {
         background-color: #FFFFFF;
         padding: 22px;
-        border-radius: 10px;
-        border-top: 4px solid #2A9D8F;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        border-radius: 12px;
+        border: 2px solid #2A9D8F;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+        margin-bottom: 20px;
+        height: 100%;
+    }
+    .vendor-title {
+        color: #0A1128;
+        font-weight: 700;
+        font-size: 1.3rem;
+        margin-bottom: 5px;
+    }
+    .vendor-category {
+        color: #2A9D8F;
+        font-weight: 600;
+        font-size: 0.95rem;
+        margin-bottom: 10px;
+    }
+
+    /* Contact Card */
+    .contact-card {
+        background-color: #FFFFFF;
+        border-radius: 12px;
+        padding: 25px;
+        border-top: 5px solid #2A9D8F;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.05);
         margin-bottom: 20px;
     }
     </style>
@@ -125,7 +158,7 @@ st.markdown('<p class="main-title">NexaBio Solutions</p>', unsafe_allow_html=Tru
 st.markdown('<p class="slogan">"Your Link to What\'s Next"</p>', unsafe_allow_html=True)
 
 # ---------------------------------------------------------
-# Page 1: About Us (Mission, Vision, Our Reach)
+# Page 1: About Us
 # ---------------------------------------------------------
 if menu == "About Us":
     st.header("About NexaBio Solutions")
@@ -199,46 +232,84 @@ elif menu == "Meet The Team":
         {"name": "Youssef Ahmed", "role": "Product Specialist", "img": "team_youssef.jpg"}
     ]
     
-    # الصف الأول (3 أعضاء)
-    row1_cols = st.columns(3)
-    for idx in range(3):
-        member = team_members[idx]
-        with row1_cols[idx]:
-            img_path = member["img"] if os.path.exists(member["img"]) else "https://via.placeholder.com/300x350.png?text=" + member['name'].replace(' ', '+')
-            
-            st.markdown(f"""
-                <div class="team-box">
-                    <img src="{img_path}" style="width:100%; border-radius: 10px; margin-bottom: 12px;">
-                    <div style="color: #0A1128; font-weight: 700; font-size: 1.1rem;">{member['name']}</div>
-                    <div style="color: #2A9D8F; font-size: 0.9rem; font-weight: 600;">{member['role']}</div>
-                </div>
-            """, unsafe_allow_html=True)
-
-    # الصف الثاني (3 أعضاء)
-    row2_cols = st.columns(3)
-    for idx in range(3, 6):
-        member = team_members[idx]
-        with row2_cols[idx - 3]:
-            img_path = member["img"] if os.path.exists(member["img"]) else "https://via.placeholder.com/300x350.png?text=" + member['name'].replace(' ', '+')
-            
-            st.markdown(f"""
-                <div class="team-box">
-                    <img src="{img_path}" style="width:100%; border-radius: 10px; margin-bottom: 12px;">
-                    <div style="color: #0A1128; font-weight: 700; font-size: 1.1rem;">{member['name']}</div>
-                    <div style="color: #2A9D8F; font-size: 0.9rem; font-weight: 600;">{member['role']}</div>
-                </div>
-            """, unsafe_allow_html=True)
+    # عرض الشبكة 3x2
+    for r in range(2):
+        cols = st.columns(3)
+        for c in range(3):
+            idx = r * 3 + c
+            member = team_members[idx]
+            with cols[c]:
+                b64_img = get_image_base64(member["img"])
+                img_src = b64_img if b64_img else "https://via.placeholder.com/300x350.png?text=" + member['name'].replace(' ', '+')
+                
+                st.markdown(f"""
+                    <div class="team-box">
+                        <img src="{img_src}" style="width:100%; height:250px; object-fit:cover; border-radius: 10px; margin-bottom: 12px;">
+                        <div style="color: #0A1128; font-weight: 700; font-size: 1.1rem;">{member['name']}</div>
+                        <div style="color: #2A9D8F; font-size: 0.9rem; font-weight: 600;">{member['role']}</div>
+                    </div>
+                """, unsafe_allow_html=True)
 
 # ---------------------------------------------------------
 # Page 3: Vendor Portfolio
 # ---------------------------------------------------------
 elif menu == "Vendor Portfolio":
     st.header("Vendor Portfolio")
-    st.write("Explore our strategic partnerships and healthcare solutions.")
+    st.write("Partnering with global leaders to bring cutting-edge technologies to the MENA region.")
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    vendors = [
+        {"name": "BioTech Innovations", "category": "Molecular Diagnostics", "desc": "Advanced PCR and sequencing systems for clinical diagnostics and genetic research."},
+        {"name": "Apex Life Sciences", "category": "Laboratory Automation", "desc": "High-throughput robotic liquid handling and automated workflow solutions."},
+        {"name": "MedCore Systems", "category": "Medical Imaging", "desc": "Next-generation ultrasound and diagnostic imaging equipment for hospitals."},
+        {"name": "GeneTech Solutions", "category": "Reagents & Assays", "desc": "High-purity diagnostic kits and research reagents tailored for labs."}
+    ]
+
+    for i in range(0, len(vendors), 2):
+        cols = st.columns(2)
+        for j in range(2):
+            if i + j < len(vendors):
+                v = vendors[i + j]
+                with cols[j]:
+                    st.markdown(f"""
+                        <div class="vendor-card">
+                            <div class="vendor-title">🏭 {v['name']}</div>
+                            <div class="vendor-category">📌 {v['category']}</div>
+                            <p style="color: #4A5568; font-size: 0.95rem;">{v['desc']}</p>
+                        </div>
+                    """, unsafe_allow_html=True)
 
 # ---------------------------------------------------------
 # Page 4: Contact Us
 # ---------------------------------------------------------
 elif menu == "Contact Us":
     st.header("Contact Us")
-    st.write("Get in touch with our team.")
+    st.write("We'd love to hear from you. Get in touch with our team for inquiries or partnerships.")
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    col1, col2 = st.columns([1, 1])
+
+    with col1:
+        st.markdown("""
+            <div class="contact-card">
+                <h3 style="color: #0A1128; margin-bottom: 15px;">📍 Get in Touch</h3>
+                <p><b>🏢 Head Office:</b> Cairo, Egypt</p>
+                <p><b>📧 Email:</b> info@nexabiosolutions.com</p>
+                <p><b>📞 Phone:</b> +20 2 1234 5678</p>
+                <p><b>🌐 Coverage:</b> GCC, Levant & North Africa</p>
+            </div>
+        """, unsafe_allow_html=True)
+
+    with col2:
+        with st.form("contact_form"):
+            st.subheader("📩 Send us a Message")
+            name = st.text_input("Full Name")
+            email = st.text_input("Email Address")
+            message = st.text_area("Your Message")
+            submit = st.form_submit_button("Send Message")
+            
+            if submit:
+                if name and email and message:
+                    st.success("Thank you! Your message has been sent successfully.")
+                else:
+                    st.warning("Please fill out all fields before submitting.")
