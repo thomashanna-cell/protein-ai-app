@@ -254,62 +254,67 @@ elif menu == "Meet The Team":
 # Page 3: Vendor Portfolio
 # ---------------------------------------------------------
 elif menu == "Vendor Portfolio":
-    st.header("Vendor Portfolio")
-    st.write("Partnering with global leaders to bring cutting-edge technologies to the MENA region.")
-    st.markdown("<br>", unsafe_allow_html=True)
-
+    st.header("Our Principal Partners")
+    st.write("We partner with world-renowned biotechnology innovators to bring high-throughput and state-of-the-art platforms to the MENA market.")
+    st.markdown("---")
+    
     vendors = [
-        {"name": "BioTech Innovations", "category": "Molecular Diagnostics", "desc": "Advanced PCR and sequencing systems for clinical diagnostics and genetic research."},
-        {"name": "Apex Life Sciences", "category": "Laboratory Automation", "desc": "High-throughput robotic liquid handling and automated workflow solutions."},
-        {"name": "MedCore Systems", "category": "Medical Imaging", "desc": "Next-generation ultrasound and diagnostic imaging equipment for hospitals."},
-        {"name": "GeneTech Solutions", "category": "Reagents & Assays", "desc": "High-purity diagnostic kits and research reagents tailored for labs."}
+        {
+            "name": "Illumina",
+            "category": "Next-Generation Sequencing (NGS)",
+            "desc": "Global leader in DNA sequencing and array-based technologies, serving customers in academic, government, pharmaceutical, biotechnology, and clinical settings."
+        },
+        {
+            "name": "Quantum-Si",
+            "category": "Next-Generation Protein Sequencing",
+            "desc": "Pioneering single-molecule protein sequencing platform to democratize proteomics and accelerate biological discoveries."
+        },
+        {
+            "name": "Bio-Rad Laboratories",
+            "category": "Life Science Research & Clinical Diagnostics",
+            "desc": "Leading global provider of life science research instruments, digital PCR systems, and clinical diagnostic products."
+        },
+        {
+            "name": "Takara Bio",
+            "category": "Reagents & Molecular Biology Technologies",
+            "desc": "Specialists in gene therapy, stem cell research, enzyme technologies, and high-performance nucleic acid extraction kits."
+        }
     ]
-
-    for i in range(0, len(vendors), 2):
-        cols = st.columns(2)
-        for j in range(2):
-            if i + j < len(vendors):
-                v = vendors[i + j]
-                with cols[j]:
-                    st.markdown(f"""
-                        <div class="vendor-card">
-                            <div class="vendor-title">🏭 {v['name']}</div>
-                            <div class="vendor-category">📌 {v['category']}</div>
-                            <p style="color: #4A5568; font-size: 0.95rem;">{v['desc']}</p>
-                        </div>
-                    """, unsafe_allow_html=True)
+    
+    for v in vendors:
+        st.markdown(f"""
+            <div class="vendor-card">
+                <h3 style="color: #0d2040; margin-top:0;">{v['name']}</h3>
+                <p><strong>Category:</strong> <span style="color: #008080;">{v['category']}</span></p>
+                <p>{v['desc']}</p>
+            </div>
+        """, unsafe_allow_html=True)
 
 # ---------------------------------------------------------
 # Page 4: Contact Us
 # ---------------------------------------------------------
 elif menu == "Contact Us":
-    st.header("Contact Us")
-    st.write("We'd love to hear from you. Get in touch with our team for inquiries or partnerships.")
-    st.markdown("<br>", unsafe_allow_html=True)
-
-    col1, col2 = st.columns([1, 1])
-
-    with col1:
-        st.markdown("""
-            <div class="contact-card">
-                <h3 style="color: #0A1128; margin-bottom: 15px;">📍 Get in Touch</h3>
-                <p><b>🏢 Head Office:</b> Cairo, Egypt</p>
-                <p><b>📧 Email:</b> info@nexabiosolutions.com</p>
-                <p><b>📞 Phone:</b> +20 2 1234 5678</p>
-                <p><b>🌐 Coverage:</b> GCC, Levant & North Africa</p>
-            </div>
-        """, unsafe_allow_html=True)
-
-    with col2:
+    st.header("Get In Touch")
+    st.write("Connect with our sales, technical support, or regional distribution teams.")
+    
+    col_a, col_b = st.columns([1, 1])
+    
+    with col_a:
+        st.subheader("📍 Contact Details")
+        st.write("**Headquarters:** New Cairo, Cairo, Egypt")
+        st.write("**Phone:** +20 2 1234 5678")
+        st.write("**Email:** info@nexabio.com")
+        st.write("**Working Hours:** Sun - Thu: 9:00 AM - 5:00 PM (EET)")
+        
+    with col_b:
+        st.subheader("✉️ Send us a Message")
         with st.form("contact_form"):
-            st.subheader("📩 Send us a Message")
             name = st.text_input("Full Name")
             email = st.text_input("Email Address")
-            message = st.text_area("Your Message")
-            submit = st.form_submit_button("Send Message")
+            institution = st.text_input("Organization / Institution")
+            vendor_interest = st.selectbox("Product Line Interest", ["General Inquiry", "Illumina", "Quantum-Si", "Bio-Rad", "Takara"])
+            message = st.text_area("Message")
             
-            if submit:
-                if name and email and message:
-                    st.success("Thank you! Your message has been sent successfully.")
-                else:
-                    st.warning("Please fill out all fields before submitting.")
+            submitted = st.form_submit_button("Submit Inquiry")
+            if submitted:
+                st.success(f"Thank you {name}. Your inquiry regarding {vendor_interest} has been submitted successfully.")
