@@ -72,7 +72,7 @@ st.markdown("""
         margin-bottom: 20px;
     }
     </style>
-""", unsafe_allow_syntax_hide=True)
+""", unsafe_allow_html=True)
 
 # ---------------------------------------------------------
 # Sidebar Navigation & Header
@@ -136,9 +136,9 @@ if menu == "Home & About Us":
         
         st.subheader("📅 Events & Exhibitions")
         st.markdown("""
-        * **MedLab Middle East 2026** | Dubai, UAE — *Booth Showcase*
-        * **Cairo BioTech Summit 2026** | Cairo, Egypt — *Keynote & Product Demo*
-        * **MENA Genomics Conference 2025** | Riyadh, KSA — *Workshop Host*
+        * **MedLab Middle East** | Dubai, UAE — *Booth Showcase*
+        * **Cairo BioTech Summit** | Cairo, Egypt — *Keynote & Product Demo*
+        * **MENA Genomics Conference** | Riyadh, KSA — *Workshop Host*
         """)
 
 # ---------------------------------------------------------
