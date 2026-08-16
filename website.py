@@ -58,27 +58,20 @@ st.markdown("""
         margin-bottom: 8px;
     }
     
-    /* Team Member Cards */
-    .team-card {
-        background-color: #FFFFFF;
-        border-radius: 12px;
-        padding: 18px;
+    /* Team Member Border Cards */
+    .team-box {
+        border: 2px solid #2A9D8F;
+        border-radius: 15px;
+        padding: 15px;
         text-align: center;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.06);
-        border: 1px solid #E2E8F0;
+        background-color: #FFFFFF;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.05);
         margin-bottom: 20px;
     }
-    .team-name {
-        color: #0A1128;
-        font-weight: 700;
-        font-size: 1.1rem;
-        margin-top: 10px;
-        margin-bottom: 2px;
-    }
-    .team-role {
-        color: #2A9D8F;
-        font-size: 0.9rem;
-        font-weight: 600;
+    .team-box:hover {
+        border-color: #0A1128;
+        box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+        transition: all 0.3s ease-in-out;
     }
 
     /* Timeline Section */
@@ -197,7 +190,6 @@ elif menu == "Meet The Team":
     st.write("The professionals driving innovation and operational excellence across the MENA region.")
     st.markdown("<br>", unsafe_allow_html=True)
     
-    # Team members setup with image filenames
     team_members = [
         {"name": "Mariam Morgan", "role": "Business Development Specialist", "img": "team_mariam.jpg"},
         {"name": "Rahma Abdelslam", "role": "Compliance Specialist", "img": "team_rahma.jpg"},
@@ -207,36 +199,33 @@ elif menu == "Meet The Team":
         {"name": "Youssef Ahmed", "role": "Product Specialist", "img": "team_youssef.jpg"}
     ]
     
-    # Grid layout with 3 columns per row
+    # الصف الأول (3 أعضاء)
     row1_cols = st.columns(3)
     for idx in range(3):
         member = team_members[idx]
         with row1_cols[idx]:
-            if os.path.exists(member["img"]):
-                st.image(member["img"], use_container_width=True)
-            else:
-                st.image("https://via.placeholder.com/300x350.png?text=" + member['name'].replace(' ', '+'))
+            img_path = member["img"] if os.path.exists(member["img"]) else "https://via.placeholder.com/300x350.png?text=" + member['name'].replace(' ', '+')
             
             st.markdown(f"""
-                <div class="team-card">
-                    <div class="team-name">{member['name']}</div>
-                    <div class="team-role">{member['role']}</div>
+                <div class="team-box">
+                    <img src="{img_path}" style="width:100%; border-radius: 10px; margin-bottom: 12px;">
+                    <div style="color: #0A1128; font-weight: 700; font-size: 1.1rem;">{member['name']}</div>
+                    <div style="color: #2A9D8F; font-size: 0.9rem; font-weight: 600;">{member['role']}</div>
                 </div>
             """, unsafe_allow_html=True)
 
+    # الصف الثاني (3 أعضاء)
     row2_cols = st.columns(3)
     for idx in range(3, 6):
         member = team_members[idx]
         with row2_cols[idx - 3]:
-            if os.path.exists(member["img"]):
-                st.image(member["img"], use_container_width=True)
-            else:
-                st.image("https://via.placeholder.com/300x350.png?text=" + member['name'].replace(' ', '+'))
+            img_path = member["img"] if os.path.exists(member["img"]) else "https://via.placeholder.com/300x350.png?text=" + member['name'].replace(' ', '+')
             
             st.markdown(f"""
-                <div class="team-card">
-                    <div class="team-name">{member['name']}</div>
-                    <div class="team-role">{member['role']}</div>
+                <div class="team-box">
+                    <img src="{img_path}" style="width:100%; border-radius: 10px; margin-bottom: 12px;">
+                    <div style="color: #0A1128; font-weight: 700; font-size: 1.1rem;">{member['name']}</div>
+                    <div style="color: #2A9D8F; font-size: 0.9rem; font-weight: 600;">{member['role']}</div>
                 </div>
             """, unsafe_allow_html=True)
 
