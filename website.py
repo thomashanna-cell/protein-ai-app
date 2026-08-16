@@ -5,10 +5,10 @@ import os
 # Page Config & Custom Styling
 # ---------------------------------------------------------
 st.set_page_config(
-    page_title="NexaBio Solutions | Your Link to What's Next",
-    page_icon="🧬",
-    layout="wide",
-    initial_sidebar_state="expanded"
+    page_title="NexaBio Solutions | Your Link to What's Next",
+    page_icon="🧬",
+    layout="wide",
+    initial_sidebar_state="expanded"
 )
 
 # Custom CSS for primary colors (Navy & Teal Palette)
