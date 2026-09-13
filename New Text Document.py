@@ -1,167 +1,130 @@
 import streamlit as st
+import requests
+from streamlit_lottie import st_lottie
 
-# Set page layout and title
+# 1. Page Configuration
 st.set_page_config(
-    page_title="Bioinformatics & MD Platform",
+    page_title="Bioinformatics & MD Hub",
     page_icon="🧬",
     layout="wide"
 )
 
-# Sidebar for Navigation
+# Function to load Lottie animations from URL
+def load_lottie_url(url: str):
+    r = requests.get(url)
+    if r.status_code != 200:
+        return None
+    return r.json()
+
+# Load a free DNA/Science animation
+dna_lottie = load_lottie_url("https://assets5.lottiefiles.com/packages/lf20_st45t8er.json")
+
+# 2. Sidebar Navigation
 st.sidebar.title("📌 Navigation")
 selected_page = st.sidebar.radio(
     "Go to:",
     [
         "🏠 Home / Platform Intro",
-        "Lesson 1: Intro & Coding MD from Scratch",
-        "Lesson 2: Lennard-Jones Gas & Energy Minimization",
-        "Lesson 3: Complete 2-Hour MD & LAMMPS Masterclass"
+        "🧬 3D Structure Viewer Demo",
+        "Lesson 1: Intro to Molecular Dynamics",
+        "Lesson 2: Lennard-Jones Gas Simulation"
     ]
 )
 
 # -----------------------------------------------------------------------------
-# 🏠 HOME / PLATFORM INTRO
+# 🏠 HOME / INTRO (With Lottie Animation)
 # -----------------------------------------------------------------------------
 if selected_page == "🏠 Home / Platform Intro":
-    st.title("🧬 Welcome to the Bioinformatics & Computational Biology Hub")
-    st.write(
-        "Your specialized platform for interactive video courses, computational workflows, "
-        "and practical training in Bioinformatics and Molecular Dynamics (MD) simulations."
-    )
+    col_title, col_anim = st.columns([2, 1])
     
-    st.divider()
+    with col_title:
+        st.title("🧬 Bioinformatics & MD Hub")
+        st.write(
+            "Welcome to the ultimate interactive platform for **Bioinformatics** and "
+            "**Molecular Dynamics (MD)** simulations."
+        )
+        st.info("👈 Use the menu on the left to navigate through lessons and 3D models!")
     
-    # Platform Highlights
-    col1, col2, col3 = st.columns(3)
-    
-    with col1:
-        st.subheader("📺 Video Courses")
-        st.write("Structured video lessons ranging from fundamental concepts to advanced computational workflows.")
-        
-    with col2:
-        st.subheader("💻 Hands-on Learning")
-        st.write("Complete Python scripts, LAMMPS input files, and real-world datasets ready for download.")
-        
-    with col3:
-        st.subheader("🧠 Interactive Quizzes")
-        st.write("Test your knowledge after each lesson with instant self-assessment quizzes.")
+    with col_anim:
+        # Display smooth vector animation if available
+        if dna_lottie:
+            st_lottie(dna_lottie, height=200, key="dna")
+        else:
+            st.text("🧬 [DNA Animation]")
 
     st.divider()
 
-    # Introduction Video / Demo
-    st.subheader("🎬 Platform Overview & Welcome Video")
-    intro_video_url = "https://www.youtube.com/watch?v=ChQbBqndwIA"
-    st.video(intro_video_url)
+    # Feature Grid
+    c1, c2, c3 = st.columns(3)
+    c1.metric(label="Video Courses", value="12+", delta="Updated")
+    c2.metric(label="Interactive 3D Models", value="PDB Ready", delta="3D Viewer")
+    c3.metric(label="Active Quizzes", value="Self-Paced", delta="Instant Score")
 
-    st.info("👈 Select any lesson from the **Sidebar Menu** on the left to start learning!")
+# -----------------------------------------------------------------------------
+# 🧬 3D MOLECULAR VIEWER DEMO
+# -----------------------------------------------------------------------------
+elif selected_page == "🧬 3D Structure Viewer Demo":
+    st.title("🧪 Interactive 3D Protein Viewer")
+    st.write("You can embed real-time 3D interactive molecular trajectories directly into your app.")
+    
+    # Embedded py3Dmol structure viewer using HTML component
+    import streamlit.components.v1 as components
+
+    # Example: Render 1AINS (Insulin PDB) in 3D
+    pdb_id = "1AINS"
+    html_code = f"""
+    <script src="https://3Dmol.org/build/3Dmol-min.js"></script>
+    <div id="container" style="width: 100%; height: 400px; position: relative;"></div>
+    <script>
+      let viewer = $3Dmol.createViewer(document.getElementById('container'), {{backgroundColor: 'white'}});
+      $3Dmol.download("pdb:{pdb_id}", viewer, {{}}, function() {{
+        viewer.setStyle({{}}, {{cartoon: {{color: 'spectrum'}}}});
+        viewer.zoomTo();
+        viewer.render();
+        viewer.spin('y', 1); // Enables continuous 3D rotation animation
+      }});
+    </script>
+    """
+    
+    components.html(html_code, height=420)
+    st.caption(f"Rotating 3D structure of PDB: {pdb_id}. Users can click and drag to rotate manually.")
 
 # -----------------------------------------------------------------------------
 # LESSON 1
 # -----------------------------------------------------------------------------
-elif selected_page == "Lesson 1: Intro & Coding MD from Scratch":
-    st.title("🎓 Lesson 1: Introduction to MD & Coding from Scratch")
+elif selected_page == "Lesson 1: Intro to Molecular Dynamics":
+    st.title("🎓 Lesson 1: Introduction to MD")
     
-    video_url_1 = "https://www.youtube.com/watch?v=ChQbBqndwIA"
-    st.video(video_url_1)
+    st.video("https://www.youtube.com/watch?v=ChQbBqndwIA")
     
-    st.subheader("📌 Overview")
-    st.write(
-        "In this video, you will learn the fundamental concepts of Molecular Dynamics (MD) simulations, "
-        "how Newton's equations of motion are solved numerically, and how particle interactions are modeled."
-    )
-    
-    st.download_button(
-        label="📄 Download Lesson 1 Notes (PDF)",
-        data="Sample summary for Lesson 1: Newton equations, periodic boundary conditions, and Lennard-Jones potential.",
-        file_name="Lesson1_Notes.pdf"
-    )
-    
-    st.divider()
-    
-    # Quiz Section 1
-    st.subheader("🧠 Quick Quiz")
-    answer_1 = st.radio(
-        "What fundamental equations are primarily solved in classical Molecular Dynamics?",
-        ["Schrödinger Equation", "Newton's Equations of Motion", "Maxwell's Equations"],
+    st.subheader("🧠 Knowledge Check")
+    answer = st.radio(
+        "Which law forms the foundation of classical MD?",
+        ["Newton's Laws of Motion", "First Law of Thermodynamics", "Boyle's Law"],
         key="q1"
     )
     
-    if st.button("Submit Answer", key="btn1"):
-        if answer_1 == "Newton's Equations of Motion":
-            st.success("Correct! Classical MD relies on Newton's second law (F = ma). 🎉")
+    if st.button("Submit Answer"):
+        if answer == "Newton's Laws of Motion":
+            st.balloons()  # Animated confetti celebration
+            st.success("Correct answer! 🎉")
         else:
-            st.error("Incorrect. Try again!")
+            st.error("Try again!")
 
 # -----------------------------------------------------------------------------
 # LESSON 2
 # -----------------------------------------------------------------------------
-elif selected_page == "Lesson 2: Lennard-Jones Gas & Energy Minimization":
-    st.title("🎓 Lesson 2: Lennard-Jones Gas & Energy Minimization")
+elif selected_page == "Lesson 2: Lennard-Jones Gas Simulation":
+    st.title("🎓 Lesson 2: Lennard-Jones Gas")
     
-    video_url_2 = "https://www.youtube.com/watch?v=2Briqk1u44U"
-    st.video(video_url_2)
+    st.video("https://www.youtube.com/watch?v=2Briqk1u44U")
     
-    st.subheader("📌 Overview")
-    st.write(
-        "This step-by-step tutorial covers system initialization, energy minimization, "
-        "integration of motion equations, and trajectory visualization."
-    )
+    st.subheader("📊 Interactive Simulation Preview")
+    st.write("Click below to run a simulation check with animated progress:")
     
-    st.download_button(
-        label="📄 Download Lesson 2 Notes (PDF)",
-        data="Sample summary for Lesson 2: Lennard-Jones potential and NVT Ensemble setup.",
-        file_name="Lesson2_Notes.pdf"
-    )
-    
-    st.divider()
-    
-    # Quiz Section 2
-    st.subheader("🧠 Quick Quiz")
-    answer_2 = st.radio(
-        "Which ensemble keeps the number of particles (N), volume (V), and temperature (T) constant?",
-        ["NVE Ensemble", "NVT Ensemble", "NPT Ensemble"],
-        key="q2"
-    )
-    
-    if st.button("Submit Answer", key="btn2"):
-        if answer_2 == "NVT Ensemble":
-            st.success("Correct! NVT stands for constant Number of particles, Volume, and Temperature. 🎉")
-        else:
-            st.error("Incorrect. Try again!")
-
-# -----------------------------------------------------------------------------
-# LESSON 3
-# -----------------------------------------------------------------------------
-elif selected_page == "Lesson 3: Complete 2-Hour MD & LAMMPS Masterclass":
-    st.title("🎓 Lesson 3: Complete 2-Hour MD & LAMMPS Masterclass")
-    
-    video_url_3 = "https://www.youtube.com/watch?v=fmQpiS9kI0A"
-    st.video(video_url_3)
-    
-    st.subheader("📌 Overview")
-    st.write(
-        "A comprehensive deep dive into Molecular Dynamics, force fields, pair potentials (EAM, Tersoff), "
-        "and running simulations using LAMMPS software."
-    )
-    
-    st.download_button(
-        label="📄 Download Lesson 3 Script & Guide (PDF)",
-        data="Sample summary for Lesson 3: Interatomic potentials, boundary conditions, and software workflows.",
-        file_name="Lesson3_Notes.pdf"
-    )
-    
-    st.divider()
-    
-    # Quiz Section 3
-    st.subheader("🧠 Quick Quiz")
-    answer_3 = st.radio(
-        "Which of the following is widely used for modeling metallic systems?",
-        ["EAM (Embedded Atom Method) Potentials", "Simple Coulomb Potential", "Ideal Gas Law"],
-        key="q3"
-    )
-    
-    if st.button("Submit Answer", key="btn3"):
-        if answer_3 == "EAM (Embedded Atom Method) Potentials":
-            st.success("Correct! EAM potentials are specifically designed for metallic systems. 🎉")
-        else:
-            st.error("Incorrect. Try again!")
+    if st.button("Run Simulation Step"):
+        progress_bar = st.progress(0)
+        for i in range(100):
+            progress_bar.progress(i + 1)
+        st.snow()  # Cool snow animation effect
+        st.success("Simulation trajectories calculated successfully!")
