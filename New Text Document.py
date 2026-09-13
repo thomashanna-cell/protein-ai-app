@@ -1,36 +1,76 @@
 import streamlit as st
 
-# ضبط عنوان الصفحة
-st.set_page_config(page_title="منصة الكورسات التعليمية", layout="wide")
-
-# الشريط الجانبي (قائمة الدروس)
-st.sidebar.title("📚 محتوى الكورس")
-lesson = st.sidebar.radio(
-    "اختر الدرس:",
-    ["الدرس الأول: مقدمة", "الدرس الثاني: الأساسيات", "الدرس الثالث: التطبيق العملي"]
+# Set page layout and title
+st.set_page_config(
+    page_title="Molecular Dynamics Course Platform",
+    page_icon="🎓",
+    layout="wide"
 )
 
-# محتوى الصفحة الرئيسي بناءً على الدرس المختار
-if lesson == "الدرس الأول: مقدمة":
-    st.header("الدرس الأول: مقدمة في المجال")
-    # عرض فيديو من يوتيوب كمثال
-    st.video("https://www.youtube.com/watch?v=dQw4w9WgXcQ") 
-    
-    st.subheader("تفاصيل الدرس:")
-    st.write("في هذا الفيديو سنتعرف على الأساسيات والمفاهيم الأولى...")
-    
-    # أزرار تحميل المرفقات
-    st.download_button("تحميل ملخص الدرس (PDF)", data="محتوى الملف", file_name="lesson1.pdf")
+# Main Title
+st.title("🎓 Online Learning Portal")
 
-elif lesson == "الدرس الثاني: الأساسيات":
-    st.header("الدرس الثاني: الأساسيات")
-    st.video("https://www.youtube.com/watch?v=dQw4w9WgXcQ")
+# Sidebar for Navigation
+st.sidebar.title("📚 Course Navigation")
+selected_lesson = st.sidebar.radio(
+    "Select a Lesson:",
+    [
+        "Lesson 1: Intro to Molecular Dynamics",
+        "Lesson 2: System Setup & Force Fields",
+        "Lesson 3: Analyzing Trajectories"
+    ]
+)
+
+# Lesson 1 Content
+if selected_lesson == "Lesson 1: Intro to Molecular Dynamics":
+    st.header("Lesson 1: Introduction to Molecular Dynamics")
     
-    # اختبار سريع
-    st.subheader("🧠 اختبار سريع:")
-    answer = st.radio("ما هي اللغة المستخدمة في Streamlit؟", ["Java", "Python", "C++"])
-    if st.button("إرسال الإجابة"):
-        if answer == "Python":
-            st.success("إجابة صحيحة! 🎉")
+    # Embedded YouTube Video (Molecular Dynamics)
+    video_url = "https://www.youtube.com/watch?v=ChQbBqndwIA"
+    st.video(video_url)
+    
+    st.subheader("📌 Overview")
+    st.write(
+        "In this video, you will learn the fundamental concepts of Molecular Dynamics (MD) simulations, "
+        "how Newton's equations of motion are solved numerically, and how particle interactions are modeled."
+    )
+    
+    # Downloadable Resource
+    st.download_button(
+        label="📄 Download Lesson Notes (PDF)",
+        data="Sample course summary for Lesson 1.",
+        file_name="Lesson1_Notes.pdf"
+    )
+    
+    st.divider()
+    
+    # Quiz Section
+    st.subheader("🧠 Quick Quiz")
+    answer = st.radio(
+        "What fundamental equations are primarily solved in classical Molecular Dynamics?",
+        ["Schrödinger Equation", "Newton's Equations of Motion", "Maxwell's Equations"]
+    )
+    
+    if st.button("Submit Answer"):
+        if answer == "Newton's Equations of Motion":
+            st.success("Correct! Classic MD relies on Newton's second law (F = ma). 🎉")
         else:
-            st.error("إجابة خاطئة، حاول مرة أخرى.")
+            st.error("Incorrect. Try again!")
+
+# Lesson 2 Content
+elif selected_lesson == "Lesson 2: System Setup & Force Fields":
+    st.header("Lesson 2: System Setup & Force Fields")
+    
+    st.video("https://www.youtube.com/watch?v=ChQbBqndwIA")
+    
+    st.subheader("📌 Overview")
+    st.write("Learn how to prepare initial atomic coordinates, define boundary conditions, and select appropriate force fields.")
+
+# Lesson 3 Content
+elif selected_lesson == "Lesson 3: Analyzing Trajectories":
+    st.header("Lesson 3: Analyzing Trajectories")
+    
+    st.video("https://www.youtube.com/watch?v=ChQbBqndwIA")
+    
+    st.subheader("📌 Overview")
+    st.write("Discover how to compute structural properties such as RMSD, RMSF, and Radial Distribution Functions (RDF).")
